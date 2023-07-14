@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+  etl:
+    build: .
+    environment:
+      PG_NAME: postgres
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_HOST: database
+    depends_on:
+      database:
+        condition: service_healthy
+volumes:
+  postgres:
+
+  
